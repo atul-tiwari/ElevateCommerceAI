@@ -1,0 +1,30 @@
+# Virtualenv
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+[Ss]hare
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+common/__pycache__
+app.log
+__pycache__
+.env
+.idea
+csv*
+*.log
+realis
+
+#VScode Files
+.vscode
+.vscode/launch.json
+test.py
+test.ipynb
+*code-workspace
+log/
+cx_Oracle-doc/
+*.pickle
