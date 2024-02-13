@@ -106,7 +106,8 @@ async def my_endpoint(request: Request):
 
 
 if __name__ == "__main__":
-    if APP_ENV == 'local':
-        uvicorn.run(app, host="127.0.0.1", port=8000)
-    else:
-        uvicorn.run(app, host="0.0.0.0", port=80)
+    # if APP_ENV == 'local':
+    #     uvicorn.run(app, host="127.0.0.1", port=8000)
+    # else:
+    #     uvicorn.run(app, host="0.0.0.0", port=80)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
