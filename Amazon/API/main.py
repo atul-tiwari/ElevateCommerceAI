@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
 
-import json
+import requests
 import time
 from contextlib import contextmanager
 import os
@@ -57,6 +57,21 @@ class product_details(BaseModel):
 class responseACK(BaseModel):
     ACK : str = Field(..., title="Acknowledgement", description="Acknowledgement", example= "Success")
 
+def get_access_token(client_id, client_secret, refresh_token):
+    token_url = "https://api.amazon.com/auth/o2/token"
+    payload = {
+        "grant_type": "refresh_token",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "refresh_token": refresh_token
+    }
+    response = requests.post(token_url, data=payload)
+
+    if response.status_code != 200:
+        # Handle error
+        return None
+
+    return response.json()['access_token']
 
 # Get_Cart : picking all products from cart
 # Request : get list 
