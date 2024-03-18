@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-def get_Driver():
+def get_Driver(dbg=0):
     
     pf = platform.system()
     if pf == 'Linux':
@@ -60,7 +60,8 @@ def get_Driver():
 
     elif pf == 'Windows':
         options = Options()
-        options.add_argument('--headless')
+        if not dbg :
+            options.add_argument('--headless')
         # options.add_argument("--remote-debugging-port=9222")
         # options.add_argument("--disable-dev-shm-using")
         # options.add_argument("--disable-extensions")
