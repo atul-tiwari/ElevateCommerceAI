@@ -1,11 +1,11 @@
 from Amazon import selenium_get_dom
 from selenium.webdriver.common.by import By
 import time
+from get_prod_details import get_dom_product_page
+from common.selenium_settings import get_Driver
 
 def login(Email, Password):
-    login_url = 'https://www.amazon.com/'
-
-    from common.selenium_settings import get_Driver
+    login_url = 'https://www.amazon.com/'    
 
     driver = get_Driver(1)
     #driver.get(login_url)
@@ -35,5 +35,7 @@ def logout(driver):
 
 driver = login('krishna056rocks@gmail.com','Piyush17#')
 from Amazon.Get_data_from_cart import get_amazon_cart
-get_amazon_cart(driver)
+asin_list,url_list=get_amazon_cart(driver)
+for _url in url_list:
+    get_dom_product_page (driver,_url)
 logout(driver)
