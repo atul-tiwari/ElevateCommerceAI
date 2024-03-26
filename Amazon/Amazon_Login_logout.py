@@ -28,8 +28,8 @@ def login(Email, Password):
 
 def logout(driver):
 
-    print()
-    driver.find_element(By.XPATH,"//a[@id='nav-item-signout']/span").click()
+    print(driver.find_element(By.XPATH,"//a[@id='nav-item-signout']").get_attribute("href"))
+    #driver.find_element(By.XPATH,"//a[@id='nav-item-signout']/span").click()
     time.sleep(5)
 
 
