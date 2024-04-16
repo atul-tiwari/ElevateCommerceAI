@@ -85,9 +85,11 @@ def PickPolling(
 # Get_Cart : picking all products from orders page
 # Request : get list  
 # Response : Product IDs and URLS
-@app.get('/api/Get_Orders', summary="picking all products from orders page", status_code=200, tags=["Get_Orders"], response_model=productListdict)
+@app.get('/api/Get_key_word', summary="picking all products from search page", status_code=200, tags=["Get_key_word"], response_model=productListdict)
 def PickPolling(
-        access_token: str = Header(..., description= "API Access Token")    
+        access_token: str = Header(..., description= "API Access Token"),
+        key_word: str = Header(..., description= "search keyword"),
+        page_no: int = Header(..., description= "page_no"),
         ):
         return JSONResponse(status_code=200,content={"ACK":"Products_list"})
     
@@ -97,7 +99,7 @@ def PickPolling(
 @app.get('/api/get_prod_details', summary="picking all products details from product page", status_code=200, tags=["get_prod_details"], response_model=product_details)
 def PickPolling(
         access_token: str = Header(..., description= "API Access Token"),
-        _url: str = Header(..., description= "Amazon Product URL")
+        ASIN: str = Header(..., description= "Amazon Product ASIN")
         ):
         return JSONResponse(status_code=200,content={"ACK":"Products_details"})
 

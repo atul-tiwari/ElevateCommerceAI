@@ -33,9 +33,9 @@ def logout(driver):
     time.sleep(5)
 
 
-driver = login('krishna056rocks@gmail.com','Piyush17#')
-from Amazon.Get_data_from_cart import get_amazon_cart
-asin_list,url_list=get_amazon_cart(driver)
-for _url in url_list:
-    get_dom_product_page (driver,_url)
-#logout(driver)s
+# driver = login('krishna056rocks@gmail.com','Piyush17#')
+# from Amazon.Get_data_from_cart import get_amazon_cart
+# asin_list,url_list=get_amazon_cart(driver)
+# for _url in url_list:
+#     get_dom_product_page (driver,_url)
+# #logout(driver)s
