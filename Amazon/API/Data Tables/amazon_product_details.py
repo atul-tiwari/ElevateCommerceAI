@@ -1,0 +1,61 @@
+import mysql.connector
+from mysql.connector import Error
+
+class amazon_product_details:
+    def __init__(self, connection):
+        self.connection = connection
+
+    def create_product_details(self, asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at):
+        try:
+            cursor = self.connection.cursor()
+            insert_query = """
+            INSERT INTO ElevateCommerceAI.amazon_product_details (asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            record_to_insert = (asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at)
+            cursor.execute(insert_query, record_to_insert)
+            self.connection.commit()
+            print("Product details created successfully")
+        except Error as e:
+            print(f"Error creating product details: {e}")
+
+    def read_product_details(self, product_id):
+        try:
+            cursor = self.connection.cursor()
+            select_query = "SELECT * FROM ElevateCommerceAI.amazon_product_details WHERE id = %s"
+            cursor.execute(select_query, (product_id,))
+            product_details = cursor.fetchone()
+            if product_details:
+                print("Product details:")
+                print(product_details)
+            else:
+                print("Product details not found")
+        except Error as e:
+            print(f"Error reading product details: {e}")
+
+    def update_product_details(self, product_id, **kwargs):
+        try:
+            cursor = self.connection.cursor()
+            update_query = "UPDATE ElevateCommerceAI.amazon_product_details SET "
+            update_values = []
+            for key, value in kwargs.items():
+                update_query += f"{key} = %s, "
+                update_values.append(value)
+            update_query = update_query.rstrip(", ") + " WHERE id = %s"
+            update_values.append(product_id)
+            cursor.execute(update_query, update_values)
+            self.connection.commit()
+            print("Product details updated successfully")
+        except Error as e:
+            print(f"Error updating product details: {e}")
+
+    def delete_product_details(self, product_id):
+        try:
+            cursor = self.connection.cursor()
+            delete_query = "DELETE FROM ElevateCommerceAI.amazon_product_details WHERE id = %s"
+            cursor.execute(delete_query, (product_id,))
+            self.connection.commit()
+            print("Product details deleted successfully")
+        except Error as e:
+            print(f"Error deleting product details: {e}")
+
