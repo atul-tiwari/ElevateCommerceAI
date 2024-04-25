@@ -61,7 +61,7 @@ def get_prod_list(keyword,page_no):
                 data_dict['product_name'] = None
             
             try:
-                data_dict['url'] = f"https://www.amazon.com//dp/{data_dict['asin']}/"
+                data_dict['url'] = f"https://www.amazon.com/dp/{data_dict['asin']}/"
             except:
                 data_dict['url'] = None
             
@@ -99,10 +99,9 @@ def get_prod_list(keyword,page_no):
         
         return data_list
 
-    except: 
+    except Exception as e: 
         print("Exception : {} : {}".format(e, traceback.format_exc()))
         return -1
     
 
-get_prod_list("charger",1)
-    
+#print(get_prod_list("charger",1))

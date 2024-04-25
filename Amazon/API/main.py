@@ -26,6 +26,9 @@ logger.add("./log/Amazon Site API.log", rotation="10MB", retention="1 year")
 import warnings
 warnings.filterwarnings(action='ignore',module='.*paramiko.*')
 
+
+from Amazon.get_key_word import get_prod_list
+
 app = FastAPI(
     title='Amazon Site API',
     description='Control C1',
@@ -73,6 +76,17 @@ def get_access_token(client_id, client_secret, refresh_token):
 
     return response.json()['access_token']
 
+
+def Check_auth_token(auth_token):
+    try:
+        tokens = open(os.path.join(sys.path[0], "auth_toknes"), "r")
+        tokens = tokens.readlines()
+        tokens = [tmp.replace("\n",'') for tmp in tokens]
+        return auth_token in tokens
+            
+    except:
+        return False
+
 # Get_Cart : picking all products from cart
 # Request : get list 
 # Response : Product IDs and URLS
@@ -91,7 +105,15 @@ def PickPolling(
         key_word: str = Header(..., description= "search keyword"),
         page_no: int = Header(..., description= "page_no"),
         ):
-        return JSONResponse(status_code=200,content={"ACK":"Products_list"})
+        if not Check_auth_token(access_token):
+            return JSONResponse(status_code=500,content={"msg":"access token ","access_token":access_token})
+        try:
+            products = get_prod_list(key_word,int(page_no))
+        
+        except:
+             return JSONResponse(status_code=500,content={"msg":"invalid args","key_word":key_word,"page_no":page_no})
+
+        return JSONResponse(status_code=200,content={"ACK":products})
     
 # get_prod_details : picking all products details from product page
 # Request : get product data 
