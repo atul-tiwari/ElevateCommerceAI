@@ -128,25 +128,27 @@ def Get_key_word(
             return JSONResponse(status_code=500,content={"msg":"Invalid access token","access_token":access_token})
         try:
             products = get_prod_list(key_word,int(page_no))
+            print(len(products))
             db = connection()
             
             insert_obj = amazon_product_lists(db.connection)
             asin_list = []
             for product in products:
                 insert_obj.create_product(
-                    asin=str(product['asin']),
-                    product_name= str(product['product_name']),
-                    url=str(product['url']),
-                    keyword=str(product['keyword']),
-                    rating=float(product['rating']),
-                    reviews=int(product['reviews']),
-                    position=int(product['position']),
-                    page_no=int(product['page_no'])
+                    asin=str(product['asin']) if product['asin'] is not None else None,
+                    product_name=str(product['product_name']) if product['product_name'] is not None else None,
+                    url=str(product['url']) if product['url'] is not None else None,
+                    keyword=str(product['keyword']) if product['keyword'] is not None else None,
+                    rating=float(product['rating']) if product['rating'] is not None else None,
+                    reviews=int(product['reviews']) if product['reviews'] is not None else None,
+                    position=int(product['position']) if product['position'] is not None else None,
+                    page_no=int(product['page_no']) if product['page_no'] is not None else None
                 )
                 asin_list.append(str(product['asin']))
             db.close()
     
-        except:
+        except Exception as e:
+            print(e)
             return JSONResponse(status_code=500,content={"msg":"invalid args","key_word":key_word,"page_no":page_no})
 
         return JSONResponse(status_code=200,content={"ACK":"Success","Prduct_added":len(asin_list),"products":asin_list})

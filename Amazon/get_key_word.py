@@ -26,6 +26,8 @@ user_agents = [
 
 ]
 
+proxy = {"http": 'http://vozxnovu:aufihbhunt1n@157.52.145.169:5778', 'https': 'http://vozxnovu:aufihbhunt1n@157.52.145.169:5778'}
+
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'Accept-Language': 'en-US,en;q=0.9',
@@ -46,11 +48,12 @@ def Clean(text):
     return text
 
 def get_prod_list(keyword,page_no):
-
+    response = requests.get('https://www.amazon.com/')
+    cookies = response.cookies
     _url  = f"https://www.amazon.com/s?k={keyword}&page={page_no}"
 
     try:
-        res = requests.get(_url, headers=headers, timeout=5)
+        res = requests.get(_url, headers=headers, timeout=5, cookies=cookies)
         dom = lxml.html.fromstring(res.text)
 
         products = dom.xpath("//div[contains(@data-component-type,'s-search-result')]")
@@ -111,5 +114,5 @@ def get_prod_list(keyword,page_no):
         print("Exception : {} : {}".format(e, traceback.format_exc()))
         return -1
     
-
-#print(get_prod_list("charger",1))
+if __name__ == "__main__":
+    print(get_prod_list("charger",1))
