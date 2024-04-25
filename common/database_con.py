@@ -11,6 +11,7 @@ class MySQLDatabase:
     
     def connect(self):
         try:
+            print(self.host,self.username,self.password,self.database)
             connection = mysql.connector.connect(
                 host=self.host,
                 user=self.username,
