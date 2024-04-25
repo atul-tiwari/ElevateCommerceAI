@@ -205,6 +205,14 @@ def post_to_amazon(
         return JSONResponse(status_code=200,content={"ACK":"responseACK"}) 
 
 
+@app.post('/api/post_to_ebay', summary="post all products details to ebay as new listing", status_code=200, tags=["post_to_ebay"],response_model=responseACK)
+def post_to_ebay(
+        data : dict,
+        access_token: str = Header(..., description= "API Access Token"),
+        ):
+        return JSONResponse(status_code=200,content={"ACK":"responseACK"}) 
+
+
 
 @app.get('/my-endpoint')
 @app.head('/my-endpoint')
