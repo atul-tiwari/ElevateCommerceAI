@@ -34,6 +34,7 @@ USER=os.getenv('USER')
 PASSWORD=os.getenv('PASSWORD')
 DB_NAME=os.getenv('DB_NAME')
 API_KEY=os.getenv('API_KEY')
+ENV=os.getenv('ENV')
 
 from Amazon.get_key_word import get_prod_list
 from Amazon.get_prod_details import get_data_api
@@ -225,4 +226,13 @@ if __name__ == "__main__":
     #     uvicorn.run(app, host="127.0.0.1", port=8000)
     # else:
     #     uvicorn.run(app, host="0.0.0.0", port=80)
+    if 
+
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+    if ENV == 'DEVELOPMENT':
+        uvicorn.run(app, host="127.0.0.1", port=8000)
+    elif ENV == 'DEPLOY':
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+    else:
+        uvicorn.run(app, host="0.0.0.0", port=80)
