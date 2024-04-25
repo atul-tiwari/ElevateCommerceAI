@@ -36,6 +36,8 @@ DB_NAME=os.getenv('DB_NAME')
 API_KEY=os.getenv('API_KEY')
 ENV=os.getenv('ENV')
 
+print(HOST_URL)
+
 from Amazon.get_key_word import get_prod_list
 from Amazon.get_prod_details import get_data_api
 
