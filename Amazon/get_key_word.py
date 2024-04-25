@@ -32,20 +32,11 @@ headers = {
     'Cache-Control': 'max-age=0',
     'Connection': 'keep-alive',
     'DNT': '1',
-    'Referer': 'https://www.amazon.cn/',
+    'Referer': 'https://www.amazon.com/',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
-    'Upgrade-Insecure-Requests': '1',
     'User-Agent': random.choice(user_agents),
-    'downlink': '6.85',
-    'ect': '4g',
-    'rtt': '100',
-    'sec-ch-ua': '"Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-ch-ua-platform-version': '"10.0.0"',
 }
 
 def Clean(text):
