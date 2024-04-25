@@ -33,10 +33,15 @@ HOST_URL=os.getenv('HOST_URL')
 USER=os.getenv('USER')
 PASSWORD=os.getenv('PASSWORD')
 DB_NAME=os.getenv('DB_NAME')
+API_KEY=os.getenv('API_KEY')
 
 from Amazon.get_key_word import get_prod_list
+from Amazon.get_prod_details import get_data_api
+
 from common.database_con import MySQLDatabase
 from Amazon.API.DataTables.amazon_product_lists import amazon_product_lists
+from Amazon.API.DataTables.amazon_product_details import amazon_product_details
+from Amazon.API.DataTables.amazon_image_links import amazon_image_links
 
 app = FastAPI(
     title='Amazon Site API',
@@ -102,7 +107,7 @@ def connection():
 # Request : get list 
 # Response : Product IDs and URLS
 @app.get('/api/Get_Cart', summary="picking all products from cart", status_code=200, tags=["Get_Cart"], response_model=productListdict)
-def PickPolling(
+def Get_Cart(
         access_token: str = Header(..., description= "API Access Token")    
         ):
         return JSONResponse(status_code=200,content={"ACK":"Products_list"})
@@ -111,7 +116,7 @@ def PickPolling(
 # Request : get list  
 # Response : Product IDs and URLS
 @app.get('/api/Get_key_word', summary="picking all products from search page", status_code=200, tags=["Get_key_word"], response_model=productListdict)
-def PickPolling(
+def Get_key_word(
         access_token: str = Header(..., description= "API Access Token"),
         key_word: str = Header(..., description= "search keyword"),
         page_no: int = Header(..., description= "page_no"),
@@ -120,7 +125,6 @@ def PickPolling(
             return JSONResponse(status_code=500,content={"msg":"Invalid access token","access_token":access_token})
         try:
             products = get_prod_list(key_word,int(page_no))
-            print(HOST_URL, USER, PASSWORD, DB_NAME)
             db = connection()
             
             insert_obj = amazon_product_lists(db.connection)
@@ -140,7 +144,7 @@ def PickPolling(
             db.close()
     
         except:
-             return JSONResponse(status_code=500,content={"msg":"invalid args","key_word":key_word,"page_no":page_no})
+            return JSONResponse(status_code=500,content={"msg":"invalid args","key_word":key_word,"page_no":page_no})
 
         return JSONResponse(status_code=200,content={"ACK":"Success","Prduct_added":len(asin_list),"products":asin_list})
     
@@ -148,10 +152,45 @@ def PickPolling(
 # Request : get product data 
 # Response : Product IDs and URLS
 @app.get('/api/get_prod_details', summary="picking all products details from product page", status_code=200, tags=["get_prod_details"], response_model=product_details)
-def PickPolling(
+def get_prod_details(
         access_token: str = Header(..., description= "API Access Token"),
         ASIN: str = Header(..., description= "Amazon Product ASIN")
         ):
+        if not Check_auth_token(access_token):
+            return JSONResponse(status_code=500,content={"msg":"Invalid access token","access_token":access_token})
+        try:
+            data_dict,image_list = get_data_api(ASIN,API_KEY=API_KEY)
+            data_dict['asin'] = ASIN
+            db = connection()
+            insert_obj = amazon_product_details(db.connection)
+            
+            if_exists = insert_obj.read_product_details(str(data_dict['asin']))
+            if if_exists is not None:
+                 return JSONResponse(status_code=500,content={"msg":"Product already Exists ","asin":str(data_dict['asin'])})
+
+            insert_obj_img = amazon_image_links(db.connection)
+
+            pid = insert_obj.create_product_details(
+                asin = str(data_dict['asin']),
+                title = str(data_dict['title']),
+                link  = str(data_dict['link']),
+                categories_flat  = str(data_dict['categories_flat']),
+                rating  = float(data_dict['rating']),
+                ratings_total  = int(data_dict['ratings_total']),
+                feature_bullets  = str(data_dict['feature_bullets']),
+                attributes  = str(data_dict['attributes']),
+                specifications  = str(data_dict['specifications']),
+                bestsellers_rank  = str(data_dict['bestsellers_rank']),
+                brand  = str(data_dict['brand']),
+                description = str(data_dict['description'])
+            )
+            print(pid)
+            insert_obj_img.create_image_links(image_list,str(data_dict['asin']),pid)
+            db.close()
+    
+        except:
+            return JSONResponse(status_code=500,content={"msg":"invalid args"})
+
         return JSONResponse(status_code=200,content={"ACK":"Products_details"})
 
 
@@ -159,7 +198,7 @@ def PickPolling(
 # Request : get product data 
 # Response : responseACK
 @app.post('/api/post_to_amazon', summary="post all products details to amazon as new listing", status_code=200, tags=["post_to_amazon"],response_model=responseACK)
-def object_storage(
+def post_to_amazon(
         data : dict,
         access_token: str = Header(..., description= "API Access Token"),
         ):

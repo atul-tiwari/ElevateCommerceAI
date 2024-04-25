@@ -5,33 +5,39 @@ class amazon_product_details:
     def __init__(self, connection):
         self.connection = connection
 
-    def create_product_details(self, asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at):
+    def create_product_details(self, asin, title, link, categories_flat, rating, ratings_total, feature_bullets, attributes, specifications, bestsellers_rank, brand, description):
         try:
             cursor = self.connection.cursor()
             insert_query = """
-            INSERT INTO ElevateCommerceAI.amazon_product_details (asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO ElevateCommerceAI.amazon_product_details (asin, title, link, categories_flat, rating, ratings_total, feature_bullets, attributes, specifications, bestsellers_rank, brand, description)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
-            record_to_insert = (asin, title, link, categories_flat, rating, ratings_total, image_table_id, feature_bullets, attributes, specifications, bestsellers_rank, brand, description, created_at)
+            record_to_insert = (asin, title, link, categories_flat, rating, ratings_total, feature_bullets, attributes, specifications, bestsellers_rank, brand, description)
             cursor.execute(insert_query, record_to_insert)
             self.connection.commit()
             print("Product details created successfully")
+
+            cursor.execute('select last_insert_id()')
+            return cursor.fetchone()[0]
         except Error as e:
             print(f"Error creating product details: {e}")
+            return None
 
-    def read_product_details(self, product_id):
+    def read_product_details(self, ASIN):
         try:
             cursor = self.connection.cursor()
-            select_query = "SELECT * FROM ElevateCommerceAI.amazon_product_details WHERE id = %s"
-            cursor.execute(select_query, (product_id,))
+            select_query = "SELECT * FROM ElevateCommerceAI.amazon_product_details WHERE asin = %s"
+            cursor.execute(select_query, (ASIN,))
             product_details = cursor.fetchone()
             if product_details:
-                print("Product details:")
-                print(product_details)
+                #print("Product details:")
+                return product_details
             else:
                 print("Product details not found")
+                return None
         except Error as e:
             print(f"Error reading product details: {e}")
+            return None
 
     def update_product_details(self, product_id, **kwargs):
         try:

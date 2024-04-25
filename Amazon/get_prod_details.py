@@ -63,10 +63,10 @@ def Clean(text):
 #     print(data_dict)
 #     return data_dict
 
-def get_data_api(ASIN):
+def get_data_api(ASIN,API_KEY):
 
     params = {
-    'api_key': '0B403C4E89D945779874AF31D5212582',
+    'api_key': API_KEY,
     'type': 'product',
     'asin': ASIN,
     'amazon_domain': 'amazon.com'
@@ -79,20 +79,25 @@ def get_data_api(ASIN):
     data_dict = {}
     data = api_result.json()
 
-    data_dict['title'] = data['product']['title']
-    data_dict['link'] = data['product']['link']
-    data_dict['categories_flat'] = data['product']['categories_flat']
-    data_dict['rating'] = data['product']['rating']
-    data_dict['ratings_total'] = data['product']['ratings_total']
-    data_dict['feature_bullets'] = data['product']['feature_bullets']
-    data_dict['attributes'] = data['product']['attributes']
-    data_dict['specifications'] = data['product']['specifications']
-    data_dict['bestsellers_rank'] = data['product']['bestsellers_rank']
-    data_dict['brand'] = data['product']['brand']
-    data_dict['description'] = data['product']['description']
+    data_dict['title'] = data['product'].get('title')
+    data_dict['link'] = data['product'].get('link')
+    data_dict['categories_flat'] = data['product'].get('categories_flat')
+    data_dict['rating'] = data['product'].get('rating')
+    data_dict['ratings_total'] = data['product'].get('ratings_total')
+    data_dict['feature_bullets'] = data['product'].get('feature_bullets')
+    data_dict['attributes'] = data['product'].get('attributes')
+    data_dict['specifications'] = data['product'].get('specifications')
+    data_dict['bestsellers_rank'] = data['product'].get('bestsellers_rank')
+    data_dict['brand'] = data['product'].get('brand')
+    data_dict['description'] = data['product'].get('description')
 
 
-    
+    image_list = []
+
+    for image in data['product'].get('images'):
+        image_list.append(image.get("link"))
+
+    return data_dict,image_list
 
 
-get_data_api('B0C8HHV9DK')
+#print(get_data_api("B07XZ8BWJX","0B403C4E89D945779874AF31D5212582"))
