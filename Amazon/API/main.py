@@ -30,13 +30,13 @@ warnings.filterwarnings(action='ignore',module='.*paramiko.*')
 load_dotenv()
 
 HOST_URL=os.getenv('HOST_URL')
-USER=os.getenv('USER')
+DB_USER=os.getenv('DB_USER')
 PASSWORD=os.getenv('PASSWORD')
 DB_NAME=os.getenv('DB_NAME')
 API_KEY=os.getenv('API_KEY')
 ENV=os.getenv('ENV')
 
-print(HOST_URL)
+#print(HOST_URL)
 
 from Amazon.get_key_word import get_prod_list
 from Amazon.get_prod_details import get_data_api
@@ -104,7 +104,7 @@ def Check_auth_token(auth_token):
         return False
 
 def connection():
-    db = MySQLDatabase(host=HOST_URL, username=USER, password=PASSWORD, database=DB_NAME)
+    db = MySQLDatabase(host=HOST_URL, username=DB_USER, password=PASSWORD, database=DB_NAME)
     return db
 # Get_Cart : picking all products from cart
 # Request : get list 
