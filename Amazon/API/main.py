@@ -15,9 +15,10 @@ import random
 import csv
 import shutil
 import re
-
+from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
+
 
 import traceback
 from loguru import logger
@@ -26,8 +27,16 @@ logger.add("./log/Amazon Site API.log", rotation="10MB", retention="1 year")
 import warnings
 warnings.filterwarnings(action='ignore',module='.*paramiko.*')
 
+load_dotenv()
+
+HOST_URL=os.getenv('HOST_URL')
+USER=os.getenv('USER')
+PASSWORD=os.getenv('PASSWORD')
+DB_NAME=os.getenv('DB_NAME')
 
 from Amazon.get_key_word import get_prod_list
+from common.database_con import MySQLDatabase
+from Amazon.API.DataTables.amazon_product_lists import amazon_product_lists
 
 app = FastAPI(
     title='Amazon Site API',
@@ -76,7 +85,6 @@ def get_access_token(client_id, client_secret, refresh_token):
 
     return response.json()['access_token']
 
-
 def Check_auth_token(auth_token):
     try:
         tokens = open(os.path.join(sys.path[0], "auth_toknes"), "r")
@@ -87,6 +95,9 @@ def Check_auth_token(auth_token):
     except:
         return False
 
+def connection():
+    db = MySQLDatabase(host=HOST_URL, username=USER, password=PASSWORD, database=DB_NAME)
+    return db
 # Get_Cart : picking all products from cart
 # Request : get list 
 # Response : Product IDs and URLS
@@ -106,14 +117,32 @@ def PickPolling(
         page_no: int = Header(..., description= "page_no"),
         ):
         if not Check_auth_token(access_token):
-            return JSONResponse(status_code=500,content={"msg":"access token ","access_token":access_token})
+            return JSONResponse(status_code=500,content={"msg":"Invalid access token","access_token":access_token})
         try:
             products = get_prod_list(key_word,int(page_no))
-        
+            print(HOST_URL, USER, PASSWORD, DB_NAME)
+            db = connection()
+            
+            insert_obj = amazon_product_lists(db.connection)
+            asin_list = []
+            for product in products:
+                insert_obj.create_product(
+                    asin=str(product['asin']),
+                    product_name= str(product['product_name']),
+                    url=str(product['url']),
+                    keyword=str(product['keyword']),
+                    rating=float(product['rating']),
+                    reviews=int(product['reviews']),
+                    position=int(product['position']),
+                    page_no=int(product['page_no'])
+                )
+                asin_list.append(str(product['asin']))
+            db.close()
+    
         except:
              return JSONResponse(status_code=500,content={"msg":"invalid args","key_word":key_word,"page_no":page_no})
 
-        return JSONResponse(status_code=200,content={"ACK":products})
+        return JSONResponse(status_code=200,content={"ACK":"Success","Prduct_added":len(asin_list),"products":asin_list})
     
 # get_prod_details : picking all products details from product page
 # Request : get product data 

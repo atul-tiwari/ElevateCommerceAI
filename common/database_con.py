@@ -56,13 +56,17 @@ class MySQLDatabase:
             values = ', '.join([f"'{value}'" for value in data_dict.values()])
         query = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
         self.execute_query(query)
+    
+    def close(self):
+        self.connection.close()
+        
 
-# Example usage
-db = MySQLDatabase(host='localhost', username='user', password='password', database='test_db')
+# # Example usage
+# db = MySQLDatabase(host='localhost', username='user', password='password', database='test_db')
 
-# Inserting data with dictionary
-data_to_insert = {'id': 1, 'name': 'John Doe', 'age': 30}
-db.insert_data('users', data_to_insert)
+# # Inserting data with dictionary
+# data_to_insert = {'id': 1, 'name': 'John Doe', 'age': 30}
+# db.insert_data('users', data_to_insert)
 
-# Inserting data with columns and values
-db.insert_data('users', 'id, name, age', '2, "Jane Doe", 35')
+# # Inserting data with columns and values
+# db.insert_data('users', 'id, name, age', '2, "Jane Doe", 35')
