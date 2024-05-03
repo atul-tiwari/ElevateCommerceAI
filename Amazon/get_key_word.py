@@ -53,7 +53,7 @@ def get_prod_list(keyword,page_no):
     _url  = f"https://www.amazon.com/s?k={keyword}&page={page_no}"
 
     try:
-        res = requests.get(_url, headers=headers, timeout=5, cookies=cookies)
+        res = requests.get(_url, headers=headers, timeout=5, cookies=cookies,proxys)
         dom = lxml.html.fromstring(res.text)
 
         products = dom.xpath("//div[contains(@data-component-type,'s-search-result')]")
