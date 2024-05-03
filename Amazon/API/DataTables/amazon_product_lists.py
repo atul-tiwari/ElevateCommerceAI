@@ -5,14 +5,14 @@ class amazon_product_lists:
     def __init__(self, connection):
         self.connection = connection
 
-    def create_product(self, asin, product_name, url, keyword, rating, reviews, position, page_no, created_at):
+    def create_product(self, asin, product_name, url, keyword, rating, reviews, position, page_no):
         try:
             cursor = self.connection.cursor()
             insert_query = """
-            INSERT INTO sys.amazon_product_lists (asin, product_Name, url, keyword, rating, reviews, `position`, page_no, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO ElevateCommerceAI.amazon_product_lists (asin,product_name,url,keyword,rating,reviews,`position`,page_no)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
-            record_to_insert = (asin, product_name, url, keyword, rating, reviews, position, page_no, created_at)
+            record_to_insert = (asin, product_name, url, keyword, rating, reviews, position, page_no)
             cursor.execute(insert_query, record_to_insert)
             self.connection.commit()
             print("Product created successfully")

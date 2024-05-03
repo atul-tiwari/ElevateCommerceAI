@@ -5,19 +5,38 @@ class amazon_image_links:
     def __init__(self, connection):
         self.connection = connection
 
-    def create_image_link(self, asin, product_id, link, created_at):
+    def create_image_link(self, asin, product_id, link):
         try:
             cursor = self.connection.cursor()
             insert_query = """
-            INSERT INTO ElevateCommerceAI.amazon_image_links (asin, product_id, link, created_at)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO ElevateCommerceAI.amazon_image_links (asin, product_id, link)
+            VALUES (%s, %s, %s)
             """
-            record_to_insert = (asin, product_id, link, created_at)
+            record_to_insert = (asin, product_id, link)
             cursor.execute(insert_query, record_to_insert)
             self.connection.commit()
             print("Image link created successfully")
         except Error as e:
             print(f"Error creating image link: {e}")
+    
+    def create_image_links(self, links, asin, pid):
+        try:
+            image_links = []
+            for link in links:
+                image_links.append((asin,pid,link))
+
+            cursor = self.connection.cursor()
+            insert_query = """
+            INSERT INTO ElevateCommerceAI.amazon_image_links (asin, product_id, link)
+            VALUES (%s, %s, %s)
+            """
+            cursor.executemany(insert_query, image_links)
+            self.connection.commit()
+            print("Image links created successfully")
+        except Error as e:
+            print(f"Error creating image links: {e}")
+
+
 
     def read_image_link(self, image_id):
         try:
