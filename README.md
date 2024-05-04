@@ -21,7 +21,16 @@ Before running the project, ensure you have the following:
 - Add your database credentials in the `.env` file using the following format:
 - Save the `.env` file.
 
-
+ClientID = 
+ClientSecret = 
+master_pass=
+HOST_URL=
+HOST_PORT=3306
+DB_USER=admin
+PASSWORD=
+DB_NAME=ElevateCommerceAI
+API_KEY=
+ENV=DEVELOPMENT
 
 
 ### Step 3: Database Setup
@@ -38,5 +47,5 @@ Once the setup is complete, you can use the API to scrape Amazon product details
 ## Contributing
 If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes.
 
-## License
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+## Github link
+https://github.com/atul-tiwari/ElevateCommerceAI
